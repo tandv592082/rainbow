@@ -1,13 +1,12 @@
 import React, { useMemo } from 'react';
 import { Image } from 'react-native';
-import { useTheme } from '../../theme/ThemeContext';
 import { Centered } from '../layout';
 import EthIcon from '@rainbow-me/assets/eth-icon.png';
 import { AssetTypes } from '@rainbow-me/entities';
 import { useBooleanState, useColorForAsset } from '@rainbow-me/hooks';
 import { ImageWithCachedMetadata } from '@rainbow-me/images';
 import styled from '@rainbow-me/styled-components';
-import { borders, fonts, position, shadow } from '@rainbow-me/styles';
+import { borders, fonts, fontWithWidth, position } from '@rainbow-me/styles';
 import {
   FallbackIcon,
   getUrlForTrustIconFallback,
@@ -16,69 +15,35 @@ import {
 } from '@rainbow-me/utils';
 
 const fallbackTextStyles = {
-  fontFamily: fonts.family.SFProRounded,
-  fontWeight: fonts.weight.bold,
+  ...fontWithWidth(fonts.weight.bold),
   letterSpacing: fonts.letterSpacing.roundedTight,
-  marginBottom: 0.5,
   textAlign: 'center',
 };
 
 const FallbackImage = styled(ImageWithCachedMetadata)(
-  ({
-    size,
-    theme: { colors },
-    shadowColor: color,
-    shadowOffset: { height: y, width: x },
-    shadowOpacity: opacity,
-    shadowRadius: radius,
-    showImage,
-  }) => ({
+  ({ size, theme: { colors }, showImage }) => ({
+    backgroundColor: android && showImage ? colors.white : 'transparent',
+    borderRadius: size / 2,
     height: size,
+    overflow: android ? 'hidden' : 'visible',
     width: size,
     ...position.coverAsObject,
-    ...shadow.buildAsObject(x, y, radius * 2, color, showImage ? opacity : 0),
-    backgroundColor: showImage ? colors.white : colors.transparent,
-    borderRadius: size / 2,
-    overflow: 'visible',
   })
 );
 
-// If th size is e.g., 20, we can use 40 that is the default icon size in the (used in discover and wallet list)
-const getIconSize = size => {
-  if (40 % size === 0) {
-    return 40;
-  }
-  return size;
-};
-
-function WrappedFallbackImage({
-  color,
-  elevation = 6,
-  shadowOpacity,
-  showImage,
-  size,
-  eth,
-  type,
-  ...props
-}) {
-  const { colors } = useTheme();
+function WrappedFallbackImage({ showImage, size, eth, type, ...props }) {
   return (
     <Centered
       {...props}
       {...position.coverAsObject}
       {...borders.buildCircleAsObject(size)}
-      backgroundColor={colors.alpha(color || colors.dark, shadowOpacity || 0.3)}
-      elevation={showImage ? elevation : 0}
-      style={{ overflow: 'hidden' }}
     >
       <FallbackImage
         as={eth ? Image : undefined}
         source={EthIcon}
         {...props}
-        overlayColor={color || colors.dark}
-        shadowOpacity={shadowOpacity}
         showImage={showImage}
-        size={getIconSize(size)}
+        size={size}
         type={type}
       />
     </Centered>
@@ -135,7 +100,7 @@ const CoinIconFallback = fallbackProps => {
         onError={hideFallbackImage}
         onLoad={showFallbackImage}
         showImage={showImage}
-        size={ios ? getIconSize(width) : width}
+        size={width}
       />
     </Centered>
   );

@@ -8,7 +8,7 @@ import ContractInteraction from '@rainbow-me/assets/contractInteraction.png';
 import EthIcon from '@rainbow-me/assets/eth-icon.png';
 import { AssetType } from '@rainbow-me/entities';
 import { useColorForAsset } from '@rainbow-me/hooks';
-import { borders, fonts } from '@rainbow-me/styles';
+import { borders, fonts, fontWithWidth } from '@rainbow-me/styles';
 import {
   FallbackIcon as CoinIconTextFallback,
   getTokenMetadata,
@@ -16,10 +16,8 @@ import {
 } from '@rainbow-me/utils';
 
 const fallbackTextStyles = {
-  fontFamily: fonts.family.SFProRounded,
-  fontWeight: fonts.weight.bold,
+  ...fontWithWidth(fonts.weight.bold),
   letterSpacing: fonts.letterSpacing.roundedTight,
-  marginBottom: 0.5,
   textAlign: 'center',
 };
 
@@ -104,7 +102,10 @@ export default React.memo(function FastCoinIcon({
   return (
     <View style={sx.container}>
       {eth ? (
-        <Image source={EthIcon} style={sx.coinIconFallback} />
+        <Image
+          source={EthIcon}
+          style={[sx.coinIconFallback, sx.withShadow, { shadowColor }]}
+        />
       ) : shouldRenderLocalCoinIconImage ? (
         <View
           style={[
@@ -155,7 +156,6 @@ const sx = StyleSheet.create({
     width: 40,
   },
   container: {
-    elevation: 6,
     height: 59,
     overflow: 'visible',
     paddingTop: 9,

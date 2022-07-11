@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useTheme } from '../../../../theme/ThemeContext';
 import { AssetType } from '@rainbow-me/entities';
 import { useForceUpdate } from '@rainbow-me/hooks';
 import { ImageWithCachedMetadata, ImgixImage } from '@rainbow-me/images';
@@ -27,6 +28,8 @@ export const FastFallbackCoinIconImage = React.memo(
     shadowColor: string;
     children: () => React.ReactNode;
   }) {
+    const { colors } = useTheme();
+
     const imageUrl = getUrlForTrustIconFallback(address, assetType)!;
 
     const key = `${symbol}-${imageUrl}`;
@@ -68,8 +71,11 @@ export const FastFallbackCoinIconImage = React.memo(
       <View
         style={[
           sx.coinIconContainer,
-          { shadowColor },
-          isLoaded && sx.withShadow,
+          sx.withShadow,
+          {
+            backgroundColor: android ? colors.white : 'transparent',
+            shadowColor,
+          },
         ]}
       >
         {shouldShowImage && (
@@ -79,7 +85,7 @@ export const FastFallbackCoinIconImage = React.memo(
             onError={onError}
             onLoad={onLoad}
             size={40}
-            style={[sx.coinIconFallback, isLoaded && sx.withBackground]}
+            style={sx.coinIconFallback}
           />
         )}
 
@@ -92,21 +98,18 @@ export const FastFallbackCoinIconImage = React.memo(
 const sx = StyleSheet.create({
   coinIconContainer: {
     alignItems: 'center',
-    backgroundColor: 'transparent',
     borderRadius: 20,
     height: 40,
     justifyContent: 'center',
-    overflow: 'hidden',
     width: 40,
   },
   coinIconFallback: {
     borderRadius: 20,
     height: 40,
-    overflow: 'visible',
+    overflow: 'hidden',
     width: 40,
   },
   container: {
-    elevation: 6,
     height: 59,
     overflow: 'visible',
     paddingTop: 9,
@@ -128,10 +131,6 @@ const sx = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  withBackground: {
-    backgroundColor: 'white',
-  },
-
   withShadow: {
     elevation: 6,
     shadowOffset: {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { fonts, fontWithWidth } from '@rainbow-me/styles';
 
 const sx = StyleSheet.create({
   container: {
@@ -7,8 +8,10 @@ const sx = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
+    ...fontWithWidth(fonts.weight.bold),
     color: '#ffffff',
-    fontWeight: '600',
+    letterSpacing: fonts.letterSpacing.roundedTight,
+    textAlign: 'center',
     textTransform: 'uppercase',
   },
 });
