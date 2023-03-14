@@ -551,7 +551,7 @@ export const loadPrivateKey = async (
 
       let userPIN = null;
       if (android) {
-        const hasBiometricsEnabled = await kc.getBiometryType();
+        const hasBiometricsEnabled = await kc.getSupportedBiometryType();
         // Fallback to custom PIN
         if (!hasBiometricsEnabled) {
           try {
@@ -719,7 +719,7 @@ export const createWallet = async (
     // Android users without biometrics need to secure their keys with a PIN
     let userPIN = null;
     if (android && !isReadOnlyType && !isHardwareWallet) {
-      const hasBiometricsEnabled = await kc.getBiometryType();
+      const hasBiometricsEnabled = await kc.getSupportedBiometryType();
       // Fallback to custom PIN
       if (!hasBiometricsEnabled) {
         try {
@@ -1325,7 +1325,7 @@ export const generateAccount = async (
 
     let userPIN = null;
     if (android) {
-      const hasBiometricsEnabled = await kc.getBiometryType();
+      const hasBiometricsEnabled = await kc.getSupportedBiometryType();
       // Fallback to custom PIN
       if (!hasBiometricsEnabled) {
         try {
@@ -1642,7 +1642,7 @@ export const loadSeedPhraseAndMigrateIfNeeded = async (
       seedPhrase = seedData?.seedphrase ?? null;
       let userPIN = null;
       if (android) {
-        const hasBiometricsEnabled = await kc.getBiometryType();
+        const hasBiometricsEnabled = await kc.getSupportedBiometryType();
         if (!seedData && !seedPhrase && !hasBiometricsEnabled) {
           logger.debug(
             '[loadAndMigrate] - Wallet is created with biometric data, there is no access to the seed',
