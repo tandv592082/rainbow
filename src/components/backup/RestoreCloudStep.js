@@ -31,7 +31,7 @@ import {
 import { useNavigation } from '@/navigation';
 import {
   addressSetSelected,
-  setWalletBackedUp,
+  setAllWalletsWithIdsAsBackedUp,
   walletsLoadState,
   walletsSetSelected,
 } from '@/redux/wallets';
@@ -195,20 +195,19 @@ export default function RestoreCloudStep({
           if (!userData && backupSelected?.name) {
             goBack();
             logger.log('updating backup state of wallets');
-            await Promise.all(
-              Object.keys(wallets).map(walletId => {
-                logger.log('updating backup state of wallet', walletId);
-                logger.log('backupSelected?.name', backupSelected?.name);
-                // Mark the wallet as backed up
-                return dispatch(
-                  setWalletBackedUp(
-                    walletId,
-                    walletBackupTypes.cloud,
-                    backupSelected?.name,
-                    false
-                  )
-                );
-              })
+            const walletIdsToUpdate = Object.keys(wallets);
+            logger.log(
+              'updating backup state of wallets with ids',
+              JSON.stringify(walletIdsToUpdate)
+            );
+            logger.log('backupSelected?.name', backupSelected?.name);
+            await dispatch(
+              setAllWalletsWithIdsAsBackedUp(
+                walletIdsToUpdate,
+                walletBackupTypes.cloud,
+                backupSelected?.name,
+                false
+              )
             );
             logger.log('done updating backup state');
           }
