@@ -254,15 +254,15 @@ export const walletInit = async (
 
   // Importing a seedphrase
   if (!isEmpty(seedPhrase)) {
-    const wallet = await createWallet(
-      seedPhrase,
+    const wallet = await createWallet({
+      seed: seedPhrase,
       color,
       name,
       overwrite,
       checkedWallet,
       image,
-      silent
-    );
+      silent,
+    });
     walletAddress = wallet?.address;
     return { isNew, walletAddress };
   }
@@ -270,7 +270,7 @@ export const walletInit = async (
   walletAddress = await loadAddress();
 
   if (!walletAddress) {
-    const wallet = await createWallet();
+    const wallet = await createWallet({});
     walletAddress = wallet?.address;
     isNew = true;
   }
@@ -606,16 +606,27 @@ export const identifyWalletType = (
   return EthereumWalletType.seed;
 };
 
-export const createWallet = async (
-  seed: null | EthereumSeed = null,
-  color: null | number = null,
-  name: null | string = null,
+type CreateWalletParams = {
+  seed?: null | EthereumSeed;
+  color?: null | number;
+  name?: null | string;
+  overwrite?: boolean;
+  checkedWallet?: null | EthereumWalletFromSeed;
+  image?: null | string;
+  silent?: boolean;
+  clearCallbackOnStartCreation?: boolean;
+};
+
+export const createWallet = async ({
+  seed = null,
+  color = null,
+  name = null,
   overwrite = false,
-  checkedWallet: null | EthereumWalletFromSeed = null,
-  image: null | string = null,
+  checkedWallet = null,
+  image = null,
   silent = false,
-  clearCallbackOnStartCreation = false
-): Promise<null | EthereumWallet> => {
+  clearCallbackOnStartCreation = false,
+}: CreateWalletParams): Promise<null | EthereumWallet> => {
   if (clearCallbackOnStartCreation) {
     callbackAfterSeeds?.();
     callbackAfterSeeds = null;

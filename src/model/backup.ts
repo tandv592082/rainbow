@@ -303,7 +303,7 @@ async function restoreSpecificBackupIntoKeychain(
             }
           );
         }
-        await createWallet(processedSeedPhrase, null, null, true);
+        await createWallet({ seed: processedSeedPhrase, overwrite: true });
       }
     }
     return true;
