@@ -329,8 +329,12 @@ export const setAllWalletsWithIdsAsBackedUp = (
     try {
       await backupUserDataIntoCloud({ wallets: newWallets });
     } catch (e) {
-      legacyLogger.sentry('SAVING WALLET USERDATA FAILED');
-      captureException(e);
+      logger.error(
+        new RainbowError('Saving multiple wallets UserData to cloud failed.'),
+        {
+          walletIds,
+        }
+      );
       throw e;
     }
   }
@@ -379,8 +383,12 @@ export const setWalletBackedUp = (
     try {
       await backupUserDataIntoCloud({ wallets: newWallets });
     } catch (e) {
-      legacyLogger.sentry('SAVING WALLET USERDATA FAILED');
-      captureException(e);
+      logger.error(
+        new RainbowError('Saving wallet UserData to cloud failed.'),
+        {
+          walletId,
+        }
+      );
       throw e;
     }
   }
